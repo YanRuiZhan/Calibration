@@ -2,6 +2,16 @@
 
 从二维圆点靶标图像中识别大、中、小圆形标记点，计算中心像素坐标（必做），并按行列编号（选做）。
 
+## 效果展示
+
+| 原图 | 识别效果（中心 + 拟合椭圆 + 分类） |
+|---|---|
+| ![原图 1](docs/images/1_original.png) | ![效果 1](docs/images/1_centers.png) |
+| ![原图 2](docs/images/2_original.png) | ![效果 2](docs/images/2_centers.png) |
+| ![原图 3](docs/images/3_original.png) | ![效果 3](docs/images/3_centers.png) |
+
+> 展示图为便于预览的缩略图；原始 BMP 位于 `images/`，完整结果（标注图、坐标 CSV）由程序输出到 `result/`。
+
 ## 1. 任务
 
 | 类型 | 任务 | 交付 |
