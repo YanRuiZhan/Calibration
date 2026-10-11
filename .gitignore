@@ -1,0 +1,66 @@
+# 编译产物
+*.o
+*.obj
+*.out
+*.exe
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.lib
+
+# 可执行文件（无扩展名，按需增删）
+app
+main
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+/build/
+/install/
+/log/
+devel/
+cmake-build-*/
+
+# 编译中间/依赖
+*.d
+*.gch
+*.pch
+*.i
+*.ii
+*.s
+*.gcno
+*.gcda
+*.gcov
+
+# 调试与转储
+*.dSYM/
+core
+vgcore.*
+*.stackdump
+
+# IDE / 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.clangd/
+compile_commands.json
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 本地结果/日志
+.cache/
+clangd/
+index/
+result/
+testdata/
+out/
+output/
+*.log
