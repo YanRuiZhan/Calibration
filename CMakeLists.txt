@@ -16,7 +16,8 @@ message(STATUS "构建类型: ${CMAKE_BUILD_TYPE}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # OpenCV（仅 draw_center 用于绘制标注图）
-find_package(OpenCV 4 REQUIRED)
+# 只找用到的三个组件，避免把上百个模块都拉进链接
+find_package(OpenCV 4 REQUIRED COMPONENTS core imgproc imgcodecs)
 message(STATUS "OpenCV 版本: ${OpenCV_VERSION}")
 
 # 添加可执行文件
@@ -47,7 +48,8 @@ target_include_directories(pipeline SYSTEM PRIVATE
 )
 
 target_link_libraries(pipeline PRIVATE ${OpenCV_LIBS})
-target_include_directories(pipeline PRIVATE ${OpenCV_INCLUDE_DIRS})
+# 头文件路径不需要显式添加：OpenCV 的导入目标自带 INTERFACE_INCLUDE_DIRECTORIES，
+# 会以 -isystem /usr/include/opencv4 注入（这也正是 <opencv2/core.hpp> 能直接写的原因）
 
 target_compile_options(pipeline PRIVATE
     -Wall
