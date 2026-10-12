@@ -1,8 +1,11 @@
 #ifndef IMAGE_IO_HPP
 #define IMAGE_IO_HPP
 
-#include "kernels.hpp"
+#include "calib/kernels.hpp"
 #include <string>
+#include <vector>
+
+namespace calib {
 
 // 图片结构体：data 存像素，w/h/ch 保存元信息
 // Matrix 本身是"行×列"的裸二维数组
@@ -14,5 +17,7 @@ struct Image {
 
 Image read_image(const std::string& img_path);
 bool save_image(const std::string& img_path, const Image& img);
+
+}  // namespace calib
 
 #endif

@@ -1,13 +1,15 @@
 // 连通域标记（手写 BFS，不依赖 OpenCV）
 // 输入单通道二值图，输出每个前景连通域的编号和统计信息
 
-#include "includes/bfs_label.hpp"
-#include <kernels.hpp>
+#include "calib/bfs_label.hpp"
+#include "calib/kernels.hpp"
 
 #include <algorithm>
 #include <queue>
 #include <utility>  // 提供std::pair
 #include <vector>
+
+namespace calib {
 
 LabelResult bfs_label(const Matrix& binary) {
     LabelResult result;
@@ -80,3 +82,5 @@ LabelResult bfs_label(const Matrix& binary) {
     }
     return result;
 }
+
+}  // namespace calib

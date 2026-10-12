@@ -1,9 +1,11 @@
 #ifndef BFS_LABEL_HPP
 #define BFS_LABEL_HPP
 
-#include "image_io.hpp"
-#include "kernels.hpp"
+#include "calib/image_io.hpp"
+#include "calib/kernels.hpp"
 #include <vector>
+
+namespace calib {
 
 // 圆形尺寸类别
 enum class CircleType { Unknown, Small, Medium, Large };
@@ -29,5 +31,7 @@ struct LabelResult {
 // 输入 binary: 单通道，前景为 255、背景为 0（如 pipeline 的输出，需先取通道）
 // 输出: 每个前景连通域的编号与统计信息
 LabelResult bfs_label(const Matrix& binary);
+
+}  // namespace calib
 
 #endif

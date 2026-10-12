@@ -1,12 +1,13 @@
 //中值平滑滤波
 
-#include "includes/median_blur.hpp"
-#include "includes/convolution.hpp"
-#include "includes/kernels.hpp"
+#include "calib/median_blur.hpp"
+#include "calib/kernels.hpp"
 
 #include <algorithm>
 #include <utility>
 #include <vector>
+
+namespace calib {
 
 // 插入排序法找中间值，排序后直接返回中位数
 /*时间复杂度 O(n^2)，n 为窗口内元素个数
@@ -138,3 +139,5 @@ Image median_blur(const Image& raw, int len_win) {
     }
     return img;
 }
+
+}  // namespace calib

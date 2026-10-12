@@ -1,8 +1,10 @@
 #ifndef CLASSIFY_HPP
 #define CLASSIFY_HPP
 
-#include "bfs_label.hpp"
+#include "calib/bfs_label.hpp"
 #include <vector>
+
+namespace calib {
 
 // 各类圆形数量统计
 struct CircleCount {
@@ -25,5 +27,7 @@ struct CircleCount {
 CircleCount classify_circles(std::vector<Component>& comps,
                              double large_ratio = 1.6,
                              double small_ratio = 0.6);
+
+}  // namespace calib
 
 #endif

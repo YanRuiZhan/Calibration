@@ -1,6 +1,8 @@
 // 连通域挑选：按面积、宽高比、填充率挑出接近圆形的靶点
 
-#include "includes/pick.hpp"
+#include "calib/pick.hpp"
+
+namespace calib {
 
 std::vector<Component> pick_circular(const std::vector<Component>& comps,
                                      const PickParams& params) {
@@ -28,3 +30,5 @@ std::vector<Component> pick_circular(const std::vector<Component>& comps,
     }
     return kept;
 }
+
+}  // namespace calib

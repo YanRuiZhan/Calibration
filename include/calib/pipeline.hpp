@@ -1,11 +1,14 @@
 #ifndef PIPELINE_HPP
 #define PIPELINE_HPP
 
-#include "image_io.hpp"
-#include "kernels.hpp"
-#include "bfs_label.hpp"
-#include "pick.hpp"
-#include "classify.hpp"
+#include "calib/image_io.hpp"
+#include "calib/kernels.hpp"
+#include "calib/bfs_label.hpp"
+#include "calib/pick.hpp"
+#include "calib/classify.hpp"
+#include <vector>
+
+namespace calib {
 
 // 预处理流水线输出：
 //   binary      : 中值滤波 + Otsu 反向二值化后的图像，前景 255
@@ -23,5 +26,7 @@ struct PipelineResult {
 // 输入: raw  原始图像（灰度或彩色），win 中值滤波窗口（正奇数）
 // win <= 0 或为偶数时，跳过中值滤波，直接做 Otsu 二值化
 PipelineResult pipeline(const Image& raw, int win);
+
+}  // namespace calib
 
 #endif

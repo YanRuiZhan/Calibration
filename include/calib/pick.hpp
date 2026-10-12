@@ -1,7 +1,10 @@
 #ifndef PICK_HPP
 #define PICK_HPP
 
-#include "bfs_label.hpp"
+#include "calib/bfs_label.hpp"
+#include <vector>
+
+namespace calib {
 
 // 连通域挑选参数（单位：像素）
 // 默认值依据图像 1 的实测分布设置：
@@ -22,5 +25,7 @@ struct PickParams {
 // 保留满足面积、宽高比、填充率条件的连通域，返回子集
 std::vector<Component> pick_circular(const std::vector<Component>& comps,
                                      const PickParams& params);
+
+}  // namespace calib
 
 #endif

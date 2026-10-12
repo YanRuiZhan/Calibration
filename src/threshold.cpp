@@ -1,9 +1,11 @@
 // 阈值分割（手写实现，不依赖 OpenCV）
 // Otsu 全局反向二值化：最大类间方差自动选取阈值
 
-#include "includes/threshold.hpp"
+#include "calib/threshold.hpp"
 
 #include <vector>
+
+namespace calib {
 
 // ---------------- 单通道：Otsu 全局阈值 ----------------
 // 返回使类间方差最大的阈值；直方图退化（全同一灰度）时返回该灰度值
@@ -88,3 +90,5 @@ Image otsu_threshold_inv(const Image& src) {
     }
     return out;
 }
+
+}  // namespace calib

@@ -1,12 +1,14 @@
 // 在原图上标注连通域中心（红色十字）
 
-#include "includes/draw_center.hpp"
+#include "calib/draw_center.hpp"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
 #include <vector>
+
+namespace calib {
 
 bool draw_center(const Image& raw,
                  const std::vector<Component>& comps,
@@ -61,3 +63,5 @@ bool draw_center(const Image& raw,
 
     return cv::imwrite(out_path, canvas);
 }
+
+}  // namespace calib

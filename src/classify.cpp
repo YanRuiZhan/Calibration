@@ -1,9 +1,11 @@
 // 按面积把候选圆分为大、中、小三类并统计数量
 
-#include "includes/classify.hpp"
+#include "calib/classify.hpp"
 
 #include <algorithm>
 #include <vector>
+
+namespace calib {
 
 CircleCount classify_circles(std::vector<Component>& comps,
                              double large_ratio,
@@ -37,3 +39,5 @@ CircleCount classify_circles(std::vector<Component>& comps,
     }
     return count;
 }
+
+}  // namespace calib

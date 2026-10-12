@@ -1,13 +1,15 @@
 // 图像预处理流水线：串联多步处理，供 main 调用
 
-#include "includes/pipeline.hpp"
-#include "includes/median_blur.hpp"
-#include "includes/threshold.hpp"
-#include "includes/bfs_label.hpp"
-#include "includes/pick.hpp"
-#include "includes/classify.hpp"
+#include "calib/pipeline.hpp"
+#include "calib/median_blur.hpp"
+#include "calib/threshold.hpp"
+#include "calib/bfs_label.hpp"
+#include "calib/pick.hpp"
+#include "calib/classify.hpp"
 
 #include <vector>
+
+namespace calib {
 
 PipelineResult pipeline(const Image& raw, int win) {
     PipelineResult result;
@@ -39,3 +41,5 @@ PipelineResult pipeline(const Image& raw, int win) {
     result.count = classify_circles(result.candidates);
     return result;
 }
+
+}  // namespace calib

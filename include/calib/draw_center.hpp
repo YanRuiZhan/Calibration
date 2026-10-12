@@ -1,10 +1,12 @@
 #ifndef DRAW_CENTER_HPP
 #define DRAW_CENTER_HPP
 
-#include "bfs_label.hpp"
-#include "image_io.hpp"
+#include "calib/bfs_label.hpp"
+#include "calib/image_io.hpp"
 #include <string>
 #include <vector>
+
+namespace calib {
 
 // 在 raw 原图上，为每个连通域中心画一个红色十字，并保存到 out_path
 // raw      : 原始图像（用于作为绘制底图）
@@ -17,5 +19,7 @@ bool draw_center(const Image& raw,
                  const std::string& out_path,
                  int arm = 18,
                  int thickness = 2);
+
+}  // namespace calib
 
 #endif

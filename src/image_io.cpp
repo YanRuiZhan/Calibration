@@ -3,10 +3,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#include "includes/image_io.hpp"
-#include "includes/stb_image.h"
-#include "includes/stb_image_write.h"
+#include "calib/image_io.hpp"
+#include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
 #include <iostream>
+
+namespace calib {
 
 Image read_image(const std::string& path) {
     Image img;
@@ -59,3 +61,5 @@ bool save_image(const std::string& path, const Image& img) {
     // stbi_write_png 返回非 0 表示成功（1），失败时返回 0
     return stbi_write_png(path.c_str(), w, h, ch, buf.data(), w * ch) != 0;
 }
+
+}  // namespace calib

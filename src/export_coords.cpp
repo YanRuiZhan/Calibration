@@ -1,9 +1,11 @@
 // 把连通域中心坐标导出为 CSV
 
-#include "includes/export_coords.hpp"
+#include "calib/export_coords.hpp"
 
 #include <fstream>
 #include <iomanip>
+
+namespace calib {
 
 bool export_coords(const std::vector<Component>& comps, const std::string& out_path) {
     std::ofstream f(out_path);
@@ -25,3 +27,5 @@ bool export_coords(const std::vector<Component>& comps, const std::string& out_p
     }
     return static_cast<bool>(f);
 }
+
+}  // namespace calib
