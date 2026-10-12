@@ -16,8 +16,9 @@ message(STATUS "构建类型: ${CMAKE_BUILD_TYPE}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # OpenCV（仅 draw_center 用于绘制标注图）
-# 只找用到的三个组件，避免把上百个模块都拉进链接
-find_package(OpenCV 4 REQUIRED COMPONENTS core imgproc imgcodecs)
+# 不限定 COMPONENTS：项目仍在扩展（后续要加标定用的 calib3d），
+# 整个导入省去用到新模块时再改这里的麻烦
+find_package(OpenCV 4 REQUIRED)
 message(STATUS "OpenCV 版本: ${OpenCV_VERSION}")
 
 # 添加可执行文件
