@@ -64,3 +64,5 @@ testdata/
 out/
 output/
 *.log
+docs/
+task/

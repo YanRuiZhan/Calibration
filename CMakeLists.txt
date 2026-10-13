@@ -32,6 +32,7 @@ add_executable(pipeline
     src/bfs_label.cpp
     src/pick.cpp
     src/classify.cpp
+    src/grid_numbering.cpp
     src/draw_center.cpp
     src/export_coords.cpp
 )
@@ -53,6 +54,7 @@ target_link_libraries(pipeline PRIVATE ${OpenCV_LIBS})
 # 会以 -isystem /usr/include/opencv4 注入（这也正是 <opencv2/core.hpp> 能直接写的原因）
 
 target_compile_options(pipeline PRIVATE
+    -std=c++17
     -Wall
     -Wextra
 )

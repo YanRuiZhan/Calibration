@@ -6,6 +6,8 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <algorithm>
+#include <string>
 #include <vector>
 
 namespace calib {
@@ -59,6 +61,22 @@ bool draw_center(const Image& raw,
         // LINE_8 保证是纯色；LINE_AA 抗锯齿会与背景混色，显得不纯
         cv::line(canvas, h1, h2, color, thickness, cv::LINE_8);
         cv::line(canvas, v1, v2, color, thickness, cv::LINE_8);
+
+        if (c.grid_id > 0) {
+            const int bbox_size = std::max(1, std::min(c.max_x - c.min_x + 1,
+                                                     c.max_y - c.min_y + 1));
+            const double font_scale = std::max(0.3, std::min(0.65, bbox_size * 0.012));
+            const int offset = std::max(5, std::min(16, bbox_size / 4));
+            const std::string text = std::to_string(c.grid_id);
+            int baseline = 0;
+            const cv::Size text_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX,
+                                                      font_scale, 1, &baseline);
+            const int text_x = std::max(0, std::min(cx + offset + 3, canvas.cols - text_size.width));
+            const int text_y = std::max(text_size.height,
+                                       std::min(cy - offset - 3, canvas.rows - baseline - 1));
+            cv::putText(canvas, text, cv::Point(text_x, text_y),
+                        cv::FONT_HERSHEY_SIMPLEX, font_scale, color, 1, cv::LINE_AA);
+        }
     }
 
     return cv::imwrite(out_path, canvas);

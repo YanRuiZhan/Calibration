@@ -6,6 +6,7 @@
 #include "calib/bfs_label.hpp"
 #include "calib/pick.hpp"
 #include "calib/classify.hpp"
+#include "calib/grid_numbering.hpp"
 #include <vector>
 
 namespace calib {
@@ -20,6 +21,7 @@ struct PipelineResult {
     LabelResult labels;
     std::vector<Component> candidates;
     CircleCount count;
+    GridNumberingResult numbering;
 };
 
 // 预处理流水线：中值滤波去噪 -> Otsu 反向二值化 -> BFS 连通域标记 -> 圆形筛选

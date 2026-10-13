@@ -17,6 +17,7 @@ struct Component {
     int min_x = 0, min_y = 0;   // 外接矩形左上角
     int max_x = 0, max_y = 0;   // 外接矩形右下角
     double cx = 0.0, cy = 0.0;  // 质心（像素坐标）
+    int row = 0, col = 0, grid_id = 0;  // 从 1 开始；0 表示未编号
     CircleType type = CircleType::Unknown;   // 大/中/小圆类别
 };
 

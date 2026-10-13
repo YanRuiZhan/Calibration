@@ -11,7 +11,7 @@ bool export_coords(const std::vector<Component>& comps, const std::string& out_p
     std::ofstream f(out_path);
     if (!f) return false;
 
-    f << "detection_id,type,cx,cy,area,bbox_w,bbox_h\n";
+    f << "detection_id,type,cx,cy,area,bbox_w,bbox_h,row,col,grid_id\n";
     f << std::fixed << std::setprecision(3);
 
     int id = 1;
@@ -23,7 +23,12 @@ bool export_coords(const std::vector<Component>& comps, const std::string& out_p
         else if (c.type == CircleType::Medium) type = "medium";
         else if (c.type == CircleType::Small) type = "small";
         f << id++ << ',' << type << ',' << c.cx << ',' << c.cy << ','
-          << c.area << ',' << bw << ',' << bh << '\n';
+          << c.area << ',' << bw << ',' << bh;
+        if (c.grid_id > 0)
+            f << ',' << c.row << ',' << c.col << ',' << c.grid_id;
+        else
+            f << ",,,";
+        f << '\n';
     }
     return static_cast<bool>(f);
 }

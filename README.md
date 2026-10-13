@@ -96,15 +96,37 @@ r_eq = sqrt(area / π)
 
 普通中圆数量最多时，用其中位面积作参考；透视明显时与附近普通圆比较。不要在所有图像上使用同一固定像素阈值。
 
-## 4. 必做输出
+## 4. 输出目录与运行方式
 
-每幅图像导出一个 CSV：
+```sh
+cmake -S . -B build
+cmake --build build -j2
+build/bin/pipeline images/1.bmp
+build/bin/pipeline images/2.bmp
+build/bin/pipeline images/3.bmp
+```
+
+命令格式为 `pipeline <输入图> [输出根目录] [median|pipeline]`。默认输出根目录为当前工作目录下的 `result/`，默认模式为 `pipeline`。例如仅中值滤波可运行 `build/bin/pipeline images/1.bmp result median`。第二个参数是目录，不是输出图片文件名。程序自动按输入文件主名建立子目录；重复运行会覆盖该图的同名结果。不同来源的同名输入图应使用不同输出根目录。
+
+```text
+result/
+├── 1/
+│   ├── binary.png        # Otsu 二值图
+│   ├── annotated.png     # 质心十字、分类颜色、网格编号
+│   └── coordinates.csv   # 坐标、类别、行列和编号
+├── 2/                    # 同上
+└── 3/                    # 同上
+```
+
+`median` 模式在相同的图像子目录下输出 `median.png`，不改动完整流水线的三个文件。
+
+每幅图像导出一个 CSV（以下数据仅示意格式）：
 
 ```csv
-detection_id,type,cx,cy,area,bbox_w,bbox_h
-1,medium,442.10,195.40,310,20,19
-2,large,816.20,555.10,700,30,29
-3,small,765.40,557.80,140,14,13
+detection_id,type,cx,cy,area,bbox_w,bbox_h,row,col,grid_id
+1,medium,442.100,195.400,310,20,19,1,1,1
+2,large,816.200,555.100,700,30,29,8,8,113
+3,small,765.400,557.800,140,14,13,8,7,112
 ```
 
 | 字段 | 含义 |
@@ -114,8 +136,9 @@ detection_id,type,cx,cy,area,bbox_w,bbox_h
 | `cx, cy` | 原图连通域质心（像素坐标） |
 | `area` | 连通域前景像素数 |
 | `bbox_w, bbox_h` | 连通域外接矩形宽高（像素） |
+| `row, col, grid_id` | 从 1 开始的行、列、网格编号；编号失败时留空 |
 
-同时输出标注图：在原图上绘制连通域质心十字，并按类别区分颜色。当前不绘制拟合椭圆或序号。
+`annotated.png` 在原图上绘制质心十字及右上方的网格编号，按类别区分颜色（大圆绿色、中圆红色、小圆橙色），不绘制拟合椭圆。
 
 检查：漏检、误检、重复检测、分类是否正确、坐标与图是否逐点对应。
 

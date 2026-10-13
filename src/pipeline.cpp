@@ -39,6 +39,7 @@ PipelineResult pipeline(const Image& raw, int win) {
 
     // 第五步：按面积区分大、中、小圆并统计
     result.count = classify_circles(result.candidates);
+    result.numbering = number_grid(result.candidates);
     return result;
 }
 
