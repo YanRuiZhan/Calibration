@@ -49,7 +49,8 @@ LabelResult bfs_label(const Matrix& binary) {
 
             // STEP2. BFS 扩散，直到填满整个连通域
             while (!q.empty()) {
-                auto [row, col] = q.front();
+                auto row = q.front().first;
+                auto col = q.front().second;
                 q.pop();
 
                 ++comp.area;

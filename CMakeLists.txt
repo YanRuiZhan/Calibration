@@ -15,7 +15,7 @@ message(STATUS "构建类型: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# OpenCV（仅 draw_center 用于绘制标注图）
+# OpenCV（threshold 用于 Otsu 二值化，draw_center 用于绘制标注图）
 # 不限定 COMPONENTS：项目仍在扩展（后续要加标定用的 calib3d），
 # 整个导入省去用到新模块时再改这里的麻烦
 find_package(OpenCV 4 REQUIRED)
