@@ -62,3 +62,19 @@ target_compile_options(pipeline PRIVATE
 set_target_properties(pipeline PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin
 )
+
+option(BUILD_GUI "构建 Qt 图片标点编号界面" ON)
+if(BUILD_GUI)
+    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+
+    add_executable(calibration_gui src/gui_main.cpp)
+    target_compile_features(calibration_gui PRIVATE cxx_std_17)
+    target_compile_options(calibration_gui PRIVATE -Wall -Wextra)
+    target_link_libraries(calibration_gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+    set_target_properties(calibration_gui PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin
+    )
+    # GUI 异步调用同目录的命令行程序，复用原有算法与输出格式。
+    add_dependencies(calibration_gui pipeline)
+endif()

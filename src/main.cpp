@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 
-// 用法: pipeline <输入图> [输出根目录=result] [median|pipeline，默认 pipeline]
+//   pipeline <输入图> [输出根目录=result] [median|pipeline，默认 pipeline]
 //   median   中值滤波
 //   pipeline 中值滤波 + Otsu 反向二值化 + BFS 连通域标记
 int main(int argc, char** argv) {

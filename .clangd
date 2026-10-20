@@ -1,0 +1,7 @@
+CompileFlags:
+  CompilationDatabase: build
+  # 本机 GCC 12 目录不完整；使用 GCC 11 标准库，但保留 Clang 自身的内置头文件。
+  Add:
+    - -isystem/usr/include/c++/11
+    - -isystem/usr/include/x86_64-linux-gnu/c++/11
+    - -isystem/usr/include/c++/11/backward

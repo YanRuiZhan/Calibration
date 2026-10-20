@@ -1,0 +1,15 @@
+{
+  "lsp": {
+    "clangd": {
+      "binary": {
+        "path": "/usr/bin/clangd-15",
+        "arguments": [
+          "--background-index",
+          "--header-insertion=iwyu",
+          "--completion-style=detailed",
+          "--query-driver="
+        ]
+      }
+    }
+  }
+}

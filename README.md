@@ -98,6 +98,26 @@ r_eq = sqrt(area / π)
 
 ## 4. 输出目录与运行方式
 
+### Qt 简洁界面
+
+依赖 OpenCV 4 和 Qt 5 / Qt 6 Widgets 开发包；Ubuntu 22.04 可安装 `sudo apt install qtbase5-dev`。
+
+```sh
+cmake -S . -B build
+cmake --build build -j2
+build/bin/calibration_gui
+# 也可以启动时直接打开图片
+build/bin/calibration_gui images/1.bmp
+```
+
+操作：**打开图片 → 识别并编号 → 导出结果**。左侧显示原图，右侧显示编号图，并排对比；图片自动适配窗口，支持滚轮缩放、拖动平移。不设置底部信息栏和“适应窗口”按钮。编号失败时仍可查看检测结果并导出，CSV 的编号字段保持为空。
+
+识别通过独立的 `pipeline` 进程执行，不阻塞界面。预览结果暂存在临时目录，关闭后自动清理；点击“导出结果”后，才将三个结果文件保存到所选目录下的 `<图片主名>/`，覆盖前会确认。`calibration_gui` 和 `pipeline` 需放在同一目录。
+
+无图形环境或只需命令行时，可用 `cmake -S . -B build -DBUILD_GUI=OFF` 关闭 GUI 构建。
+
+### 命令行
+
 ```sh
 cmake -S . -B build
 cmake --build build -j2
