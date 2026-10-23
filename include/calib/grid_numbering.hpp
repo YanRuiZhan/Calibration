@@ -14,10 +14,8 @@ struct GridNumberingResult {
     std::string message;
 };
 
-// 当前靶标为 15×15 点阵；大圆固定在网格中心，小圆在其左侧一格，
-// 小圆 -> 大圆为列正方向。候选完整时做严格检查；数量不符（板边缺点、
-// 少量误检）时自动改用单应栅格容错拟合，未落到栅格上的候选保持
-// row/col/grid_id = 0，由调用方决定是否剔除。
+// 按主方向把已检测到的点分行，并在每行内从左到右连续编号。
+// 漏检点不占编号位；不使用单应映射，也不补出缺失点。
 // 失败时清除编号，不改变中心、类别或输入顺序。
 GridNumberingResult number_grid(std::vector<Component>& comps,
                                 int expected_rows = 15, int expected_cols = 15);

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="1180" viewBox="0 0 920 1180" role="img" aria-labelledby="title desc">
+  <title id="title">点阵检测与连续编号流程</title>
+  <desc id="desc">采用大圆和小圆作为方向锚点，通过距离约束排除背景误检，按主方向分行并对检测点连续编号，不使用单应性映射。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111"/>
+    </marker>
+    <style>
+      text { font-family: "Noto Sans CJK SC", "Noto Sans", sans-serif; fill: #111; }
+      .title { font-size: 27px; font-weight: 700; }
+      .section { font-size: 18px; font-weight: 700; }
+      .body { font-size: 15px; }
+      .note { font-size: 14px; }
+      .node { fill: #fff; stroke: #111; stroke-width: 1.8; }
+      .decision { fill: #fff; stroke: #111; stroke-width: 1.8; }
+      .line { fill: none; stroke: #111; stroke-width: 1.7; marker-end: url(#arrow); }
+      .plain { fill: none; stroke: #111; stroke-width: 1.7; }
+    </style>
+  </defs>
+
+  <text x="460" y="45" text-anchor="middle" class="title">点阵检测与连续编号流程</text>
+  <text x="460" y="72" text-anchor="middle" class="note">黑白流程图 · 当前实现</text>
+
+  <rect x="245" y="100" width="430" height="76" rx="3" class="node"/>
+  <text x="460" y="132" text-anchor="middle" class="section">输入圆点候选</text>
+  <text x="460" y="157" text-anchor="middle" class="body">椭圆拟合、筛选与内外轮廓去重后的候选点</text>
+
+  <path d="M460 176 V214" class="line"/>
+  <rect x="245" y="214" width="430" height="76" rx="3" class="node"/>
+  <text x="460" y="246" text-anchor="middle" class="section">按面积分类</text>
+  <text x="460" y="271" text-anchor="middle" class="body">大圆 · 中圆 · 小圆</text>
+
+  <path d="M460 290 V328" class="line"/>
+  <rect x="245" y="328" width="430" height="92" rx="3" class="node"/>
+  <text x="460" y="361" text-anchor="middle" class="section">选择方向锚点</text>
+  <text x="460" y="387" text-anchor="middle" class="body">枚举大圆、小圆组合；检查面积关系及中心距</text>
+  <text x="460" y="408" text-anchor="middle" class="note">中心距应接近相邻标记点间距</text>
+
+  <path d="M460 420 V456" class="line"/>
+  <polygon points="460,456 590,518 460,580 330,518" class="decision"/>
+  <text x="460" y="512" text-anchor="middle" class="section">是否找到有效锚点？</text>
+  <text x="460" y="537" text-anchor="middle" class="body">大圆 → 小圆方向确定主轴</text>
+
+  <path d="M330 518 H137 V620" class="line"/>
+  <text x="233" y="503" text-anchor="middle" class="body">否</text>
+  <rect x="35" y="620" width="205" height="74" rx="3" class="node"/>
+  <text x="137" y="651" text-anchor="middle" class="section">编号失败</text>
+  <text x="137" y="676" text-anchor="middle" class="body">保留检测结果</text>
+
+  <path d="M590 518 H783 V620" class="line"/>
+  <text x="687" y="503" text-anchor="middle" class="body">是</text>
+  <rect x="680" y="620" width="205" height="74" rx="3" class="node"/>
+  <text x="782" y="651" text-anchor="middle" class="section">建立主方向坐标系</text>
+  <text x="782" y="676" text-anchor="middle" class="body">投影候选点坐标</text>
+
+  <path d="M782 694 V731 H460 V756" class="line"/>
+  <rect x="245" y="756" width="430" height="90" rx="3" class="node"/>
+  <text x="460" y="790" text-anchor="middle" class="section">点阵范围筛选与分行</text>
+  <text x="460" y="816" text-anchor="middle" class="body">排除远离锚点的候选；按共线关系拟合 15 行</text>
+  <text x="460" y="837" text-anchor="middle" class="note">每行允许缺点，未检测点不生成</text>
+
+  <path d="M460 846 V884" class="line"/>
+  <rect x="245" y="884" width="430" height="90" rx="3" class="node"/>
+  <text x="460" y="918" text-anchor="middle" class="section">行排序与行内排序</text>
+  <text x="460" y="944" text-anchor="middle" class="body">行按截距排序；每行按主方向坐标从左到右排序</text>
+  <text x="460" y="965" text-anchor="middle" class="note">检测点之间允许跨过漏检位置</text>
+
+  <path d="M460 974 V1012" class="line"/>
+  <rect x="245" y="1012" width="430" height="78" rx="3" class="node"/>
+  <text x="460" y="1045" text-anchor="middle" class="section">连续编号</text>
+  <text x="460" y="1071" text-anchor="middle" class="body">只对检测到的点递增编号；漏点不占编号</text>
+
+  <path d="M460 1090 V1120" class="line"/>
+  <rect x="245" y="1120" width="430" height="48" rx="3" class="node"/>
+  <text x="460" y="1150" text-anchor="middle" class="body">输出 row、col、grid_id 及标注图 / CSV</text>
+
+  <path d="M137 694 V1144 H245" class="plain"/>
+  <text x="154" y="1128" class="note">失败时编号字段留空</text>
+
+  <text x="460" y="1177" text-anchor="middle" class="note">不使用单应性映射；不补点；不保留靶标物理空位编号</text>
+</svg>
