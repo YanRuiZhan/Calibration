@@ -1,14 +1,14 @@
 #ifndef EXPORT_COORDS_HPP
 #define EXPORT_COORDS_HPP
 
-#include "calib/bfs_label.hpp"
+#include "calib/component.hpp"
 #include <string>
 #include <vector>
 
 namespace calib {
 
-// 把连通域中心坐标导出为 CSV 文件
-// comps   : 待导出的连通域（如 pick_circular 的结果）
+// 把圆点中心坐标导出为 CSV 文件
+// comps   : 待导出的圆点候选
 // out_path: 输出文件路径（.csv）
 // 表头: detection_id,type,cx,cy,area,bbox_w,bbox_h
 // 返回是否写入成功

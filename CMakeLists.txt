@@ -15,26 +15,25 @@ message(STATUS "构建类型: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# OpenCV（threshold 用于 Otsu 二值化，draw_center 用于绘制标注图）
-# 不限定 COMPONENTS：项目仍在扩展（后续要加标定用的 calib3d），
+# OpenCV（Canny、轮廓/椭圆拟合、标注图绘制）
 # 整个导入省去用到新模块时再改这里的麻烦
 find_package(OpenCV 4 REQUIRED)
 message(STATUS "OpenCV 版本: ${OpenCV_VERSION}")
 
-# 添加可执行文件
+# 添加可执行文件（src 按职责分层）
 add_executable(pipeline
-    src/main.cpp
-    src/kernels.cpp
-    src/image_io.cpp
-    src/median_blur.cpp
-    src/threshold.cpp
-    src/pipeline.cpp
-    src/bfs_label.cpp
-    src/pick.cpp
-    src/classify.cpp
-    src/grid_numbering.cpp
-    src/draw_center.cpp
-    src/export_coords.cpp
+    src/app/main.cpp
+    src/app/pipeline.cpp
+    src/core/kernels.cpp
+    src/core/convolution.cpp
+    src/core/image_io.cpp
+    src/core/gray.cpp
+    src/detect/canny.cpp
+    src/detect/ellipse.cpp
+    src/numbering/classify.cpp
+    src/numbering/grid_numbering.cpp
+    src/output/draw_center.cpp
+    src/output/export_coords.cpp
 )
 
 # target 专属设置
@@ -68,7 +67,7 @@ if(BUILD_GUI)
     find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-    add_executable(calibration_gui src/gui_main.cpp)
+    add_executable(calibration_gui src/app/gui_main.cpp)
     target_compile_features(calibration_gui PRIVATE cxx_std_17)
     target_compile_options(calibration_gui PRIVATE -Wall -Wextra)
     target_link_libraries(calibration_gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

@@ -1,4 +1,4 @@
-// 把连通域中心坐标导出为 CSV
+// 把圆点中心坐标导出为 CSV
 
 #include "calib/export_coords.hpp"
 

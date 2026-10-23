@@ -1,4 +1,4 @@
-// 在原图上标注连通域中心（红色十字）
+// 在原图上标注圆点中心和编号
 
 #include "calib/draw_center.hpp"
 
@@ -61,6 +61,14 @@ bool draw_center(const Image& raw,
         // LINE_8 保证是纯色；LINE_AA 抗锯齿会与背景混色，显得不纯
         cv::line(canvas, h1, h2, color, thickness, cv::LINE_8);
         cv::line(canvas, v1, v2, color, thickness, cv::LINE_8);
+
+        // 只有拟合到椭圆时才画椭圆轮廓
+        if (c.major > 0.0 && c.minor > 0.0) {
+            cv::ellipse(canvas,
+                        cv::Point2d(c.cx, c.cy),
+                        cv::Size2d(c.major * 0.5, c.minor * 0.5),
+                        c.angle, 0.0, 360.0, color, 1, cv::LINE_AA);
+        }
 
         if (c.grid_id > 0) {
             const int bbox_size = std::max(1, std::min(c.max_x - c.min_x + 1,

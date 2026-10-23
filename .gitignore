@@ -10,9 +10,9 @@
 *.dll
 *.lib
 
-# 可执行文件（无扩展名，按需增删）
-app
-main
+# 可执行文件（无扩展名，按需增删；仅根目录）
+/app
+/main
 
 # CMake
 CMakeCache.txt
@@ -36,9 +36,9 @@ cmake-build-*/
 *.gcda
 *.gcov
 
-# 调试与转储
+# 调试与转储（仅根目录的 core dump）
 *.dSYM/
-core
+/core
 vgcore.*
 *.stackdump
 
@@ -61,8 +61,7 @@ clangd/
 index/
 result/
 testdata/
-out/
-output/
+/out/
+/output/
 *.log
-docs/
 task/

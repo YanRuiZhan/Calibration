@@ -11,6 +11,7 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QPainter>
 #include <QProcess>
 #include <QPushButton>
 #include <QResizeEvent>
@@ -25,19 +26,26 @@
 
 class ImageView : public QGraphicsView {
 public:
-    explicit ImageView(QWidget* parent = nullptr) : QGraphicsView(parent) {
+    explicit ImageView(const QString& placeholder, QWidget* parent = nullptr)
+        : QGraphicsView(parent), placeholder_(placeholder) {
         setScene(new QGraphicsScene(this));
         setDragMode(QGraphicsView::ScrollHandDrag);
         setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-        setBackgroundBrush(QColor(238, 240, 243));
+        setBackgroundBrush(Qt::black);
         setFrameShape(QFrame::NoFrame);
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     }
 
     void showImage(const QPixmap& image) {
         scene()->clear();
-        scene()->addPixmap(image);
+        has_image_ = !image.isNull();
+        if (has_image_) scene()->addPixmap(image);
         scene()->setSceneRect(image.rect());
+        setBackgroundBrush(has_image_ ? QColor(238, 240, 243) : QColor(Qt::black));
+        resetTransform();
         fitImage();
+        viewport()->update();
     }
 
     void fitImage() {
@@ -47,6 +55,18 @@ public:
     }
 
 protected:
+    void paintEvent(QPaintEvent* event) override {
+        QGraphicsView::paintEvent(event);
+        if (!has_image_) {
+            QPainter painter(viewport());
+            painter.setPen(Qt::white);
+            QFont font = painter.font();
+            font.setPointSize(12);
+            painter.setFont(font);
+            painter.drawText(viewport()->rect(), Qt::AlignCenter, placeholder_);
+        }
+    }
+
     void resizeEvent(QResizeEvent* event) override {
         QGraphicsView::resizeEvent(event);
         if (auto_fit_) fitImage();
@@ -64,13 +84,15 @@ protected:
     }
 
 private:
+    QString placeholder_;
+    bool has_image_ = false;
     bool auto_fit_ = true;
 };
 
 class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(const QString& initial_image = {}) {
-        setWindowTitle(QStringLiteral("圆点识别与编号"));
+        setWindowTitle(QStringLiteral("工业摄影测量技术作业2"));
         resize(1100, 780);
         setMinimumSize(640, 480);
 
@@ -94,9 +116,9 @@ public:
 
         layout->addLayout(tools);
         auto* comparison = new QSplitter(Qt::Horizontal);
-        original_view_ = new ImageView;
+        original_view_ = new ImageView(QStringLiteral("输入图像"));
         original_view_->setObjectName("originalView");
-        numbered_view_ = new ImageView;
+        numbered_view_ = new ImageView(QStringLiteral("输出图像"));
         numbered_view_->setObjectName("numberedView");
         const auto add_panel = [comparison](const QString& title, ImageView* view) {
             auto* panel = new QWidget;
@@ -178,7 +200,7 @@ private:
         run_->setEnabled(true);
         save_->setEnabled(false);
         save_->setText(QStringLiteral("导出结果"));
-        setWindowTitle(QStringLiteral("%1 — 圆点识别与编号").arg(QFileInfo(path).fileName()));
+        setWindowTitle(QStringLiteral("工业摄影测量技术作业2"));
 
     }
 
@@ -206,14 +228,19 @@ private:
         result_dir_ = temporary_->path() + "/" + QFileInfo(input_).completeBaseName();
         setBusy(true);
 
-        process_.start(backend, {input_, temporary_->path(), "pipeline"});
+        process_.start(backend, {input_, temporary_->path()});
     }
 
     void exportResults() {
         const QString root = QFileDialog::getExistingDirectory(this, QStringLiteral("选择导出根目录"));
         if (root.isEmpty()) return;
         const QString destination = QDir(root).filePath(QFileInfo(input_).completeBaseName());
-        const QStringList names = {"annotated.png", "binary.png", "coordinates.csv"};
+        QStringList names;
+        for (const QString& name : {QStringLiteral("annotated.png"),
+                                    QStringLiteral("binary.png"),
+                                    QStringLiteral("coordinates.csv")}) {
+            if (QFileInfo::exists(result_dir_ + "/" + name)) names << name;
+        }
         const bool overwrites = std::any_of(names.begin(), names.end(), [&](const QString& name) {
             return QFileInfo::exists(destination + "/" + name);
         });

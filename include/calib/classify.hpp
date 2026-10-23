@@ -1,7 +1,7 @@
 #ifndef CLASSIFY_HPP
 #define CLASSIFY_HPP
 
-#include "calib/bfs_label.hpp"
+#include "calib/component.hpp"
 #include <vector>
 
 namespace calib {
