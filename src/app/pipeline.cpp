@@ -10,10 +10,13 @@ namespace calib {
 PipelineResult pipeline(const Image& raw, const CannyParams& canny,
                         const EllipseParams& ellipse) {
     PipelineResult result;
-    // Canny 内部已完成 3×3 高斯平滑，这里不再重复平滑。
+    // Canny 边缘提取
     result.binary = canny_edge_improved(raw, canny);
+    // 筛选候选椭圆
     result.candidates = detect_ellipses(result.binary, ellipse);
+    // 按面积大小分类
     result.count = classify_circles(result.candidates);
+    // 按主方向编号
     result.numbering = number_grid(result.candidates);
 
     if (result.numbering.success) {

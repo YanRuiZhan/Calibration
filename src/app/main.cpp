@@ -70,10 +70,13 @@ int main(int argc, char **argv) {
                          (out_dir / "annotated.png").string(), 18, 2);
   const bool coords_saved = calib::export_coords(
       res.candidates, (out_dir / "coordinates.csv").string());
-  if (!binary_saved || !annotated_saved || !coords_saved) {
+  if (!binary_saved || !annotated_saved || !coords_saved ||
+        !initial_saved || !centers_saved || !classified_saved || !direction_saved) {
     std::cerr << "输出失败: binary=" << binary_saved
               << ", annotated=" << annotated_saved
-              << ", coordinates=" << coords_saved << '\n';
+              << ", coordinates=" << coords_saved
+                            << ", initial=" << initial_saved << ", centers=" << centers_saved
+                            << ", classified=" << classified_saved << ", direction=" << direction_saved << '\n';
     return 1;
   }
 
