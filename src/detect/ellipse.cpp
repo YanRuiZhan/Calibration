@@ -57,8 +57,8 @@ std::vector<Component> detect_ellipses(const Image& edges,
             edge.at<uchar>(y, x) =
                 static_cast<uchar>(clamp255(edges.data[y][x * edges.ch]));
 
-    // RETR_LIST：保留所有轮廓，包括闭合圆环的内边界（洞）。
-    // 内外两条轮廓会拟合成同一个圆，后面按中心距离去重。
+    // RETR_LIST：保留所有轮廓
+    // 拟合椭圆，后面按规则去重
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(edge, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
 
@@ -83,7 +83,7 @@ std::vector<Component> detect_ellipses(const Image& edges,
         kept.push_back({ell, residual, static_cast<int>(contour.size())});
     }
 
-    // 同一圆环的内外轮廓中心几乎重合：保留点更多（外轮廓）或残差更小的一条
+    // 有的图形内外轮廓中心几乎重合：保留点更多（外轮廓）或残差更小的一条
     std::vector<Candidate> deduped;
     deduped.reserve(kept.size());
     for (const Candidate& c : kept) {
@@ -106,7 +106,15 @@ std::vector<Component> detect_ellipses(const Image& edges,
         const double major = std::max(ell.size.width, ell.size.height);
         const double minor = std::min(ell.size.width, ell.size.height);
 
-        // RotatedRect 的 angle 对应 width 轴；长轴是 height 时补 90°
+        // cv::RotatedRect 的 angle 是与 width 轴（size.width 那条边）的夹角。
+        // 所以求出来的“长轴方向”要分情况：
+        //   - 长轴就是 width 边（height <= width）：长轴方向 = angle
+        //   - 长轴是 height 边（height > width）：height 轴与 width 轴垂直，方向 = angle + 90°
+        // 关键点：RotatedRect 本身对“宽度/高度”的命名并不保证 width >= height，
+        // fitEllipse 返回哪个轴更长的两条边完全是随机的，不补这 90° 时，
+        // 约一半的椭圆会把长轴方向算成“短轴方向”（差 90°）。
+        // 再把结果对 180° 取模，因为椭圆是无向的（θ 与 θ+180° 等价）。
+
         double angle = ell.angle;
         if (ell.size.height > ell.size.width) angle += 90.0;
         angle = std::fmod(angle, 180.0);

@@ -8,6 +8,16 @@
 namespace calib {
 namespace {
 
+// 编号主要逻辑：
+//   1. 以“小圆 → 大圆”的连线方向作为主方向（同时确定行方向与旋转角），
+//      并把所有候选点变换到以 大圆为原点、主方向为 u 轴的局部坐标系；
+//   2. 在该局部系中按“平行于主方向”的直线拟合各行：枚举点对给出候选直线
+//      （斜率限制为接近 u 轴），按到直线距离 (tolerance) 收集点，
+//      只保留满足最少点数且残差都合格的候选，优先点数最多、残差最小者；
+//   3. 每轮取出一行并标记已用，重复 expected_rows 次，再按截距排序定行号；
+//   4. 行内按 u 坐标排序定列号，并检查行内点距是否合理；
+//   5. 检查大圆与小圆是否在同一行且相邻，确认方向与编号一致。
+
 struct Point {
     double u;
     double v;
@@ -19,6 +29,7 @@ struct Row {
     double intercept = 0.0;
 };
 
+// 直线拟合函数
 bool fit_row(const std::vector<Point>& points, Row& row) {
     if (row.ids.size() < 2) return false;
 
@@ -80,9 +91,15 @@ GridNumberingResult number_grid(std::vector<Component>& comps,
                                                comps[l].cy - comps[s].cy);
             const double area_ratio = comps[l].area > 0
                 ? static_cast<double>(comps[s].area) / comps[l].area : 1.0;
+            // 距离过近（几乎是同一点，疑似重复检测）或面积比不够小
+            // （小圆并不比大圆明显小，可能是背景干扰圆）都跳过。
             if (distance < 4.0 || area_ratio >= 0.8) continue;
 
+
             // 大圆与小圆应是相邻标记点；排除远离靶标的背景大圆。
+            // 标定板相邻标记点的名义间距为 45（像素级尺度），
+            // 以实际距离与 45 的偏差作为打分，偏差越小说明这对大小圆
+            // 越可能是靶标上相邻的锚点（下方据此过滤 > 15 的背景干扰）。
             const double score = std::abs(distance - 45.0);
             if (score < best_anchor_score) {
                 large = l;
@@ -91,14 +108,19 @@ GridNumberingResult number_grid(std::vector<Component>& comps,
             }
         }
     }
+    // 锚点校验：必须同时找到大圆和小圆，且间距接近点阵名义间距。
     if (large < 0 || small < 0 || best_anchor_score > 15.0)
         return fail("无法找到间距符合点阵尺度的大圆和小圆锚点");
 
+    // 以“小圆 → 大圆”的方向建立局部坐标系（u 轴沿该方向）。
     const double dx = comps[large].cx - comps[small].cx;
     const double dy = comps[large].cy - comps[small].cy;
+    // std::hypot(x, y) 计算 √(x² + y²)，即二维向量的欧氏长度（模长）。
     const double spacing = std::hypot(dx, dy);
     if (spacing < 1e-6) return fail("大小圆中心重合");
 
+    // 将所有候选点坐标变换到以大圆为原点的局部坐标系：
+    // u 为沿大小圆连线方向（行方向），v 为垂直方向。
     std::vector<Point> points;
     points.reserve(comps.size());
     for (const auto& c : comps) {
@@ -130,8 +152,8 @@ GridNumberingResult number_grid(std::vector<Component>& comps,
 
                 Row candidate;
                 for (size_t k = 0; k < points.size(); ++k) {
-                    // 点阵约为 15×15；远离锚点的边缘候选不参与分行，
-                    // 但仍保留为未编号候选，成功后由 pipeline 清除。
+                    // 点阵约为 15×15；远离锚点的边缘候选不参与分行
+                    // 但仍保留为未编号候选
                     if (std::abs(points[k].u) > spacing * 9.0 ||
                         std::abs(points[k].v) > spacing * 9.0)
                         continue;
